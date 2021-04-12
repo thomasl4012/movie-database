@@ -6,17 +6,23 @@ const MoviesList = (props) => {
 
   return (
     <div className="list-group list-group-scroll">
-      {movies.map(({ title, id }) => {
-        return (
-          <Link
-            to={`/${id}`}
-            key={id}
-            className="list-group-item list-group-item-action text-left"
-          >
-            {title}
-          </Link>
-        );
-      })}
+      {movies ? (
+        <div>
+          {movies.map(({ title, id }) => {
+            return (
+              <Link
+                to={`/movie/${id}`}
+                key={id}
+                className="list-group-item list-group-item-action text-left"
+              >
+                {title}
+              </Link>
+            );
+          })}
+        </div>
+      ) : (
+        "Error"
+      )}
     </div>
   );
 };

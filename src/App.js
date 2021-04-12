@@ -21,8 +21,8 @@ export class App extends Component {
   };
 
   componentDidMount() {
-    window.addEventListener("resize", this.update);
-    this.update();
+    window.addEventListener("resize", this.updateDimensions);
+    this.updateDimensions();
     axios
       .get(`${this.baseUrl}/list/7091212?api_key=${this.apiKey}`)
       .then((apiResponse) => {
@@ -35,14 +35,16 @@ export class App extends Component {
       .catch((error) => console.log(error));
   }
 
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateDimensions);
+  }
+
   handleChange = (e) => {
     this.setState({ search: e.target.value });
   };
 
-  update = () => {
-    this.setState({
-      width: window.innerWidth,
-    });
+  updateDimensions = () => {
+    this.setState({ width: window.innerWidth });
   };
 
   render() {
@@ -65,7 +67,7 @@ export class App extends Component {
                 </div>
                 <div className="col-sm-8">
                   <Route
-                    path="/:id"
+                    path="/movie/:id"
                     component={(props) => (
                       <MovieDetail {...props} movies={movies} />
                     )}
