@@ -6,7 +6,7 @@ const MovieDetail = ({ movies, id }) => {
   useEffect(() => {
     setMovie(movies.find((item) => String(id) === String(item.id)));
   }, [movie, id, movies]);
-  console.log(movie);
+
   return (
     <Fragment>
       {movie !== undefined ? (

@@ -49,7 +49,6 @@ export class App extends Component {
         `https://api.themoviedb.org/3/search/movie?api_key=${this.apiKey}&query=${this.state.search}&page=1&include_adult=false`
       )
       .then((apiResponse) => {
-        console.log(apiResponse);
         this.setState({ movies: apiResponse.data.results, searchState: true });
       })
       .catch((error) => {
