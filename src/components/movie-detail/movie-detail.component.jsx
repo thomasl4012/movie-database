@@ -1,17 +1,15 @@
 import React, { useState, useEffect, Fragment } from "react";
 
-const MovieDetail = ({ movies, ...props }) => {
-  const [movie, setMovie] = useState([]);
+const MovieDetail = ({ movies, id }) => {
+  const [movie, setMovie] = useState();
 
   useEffect(() => {
-    setMovie(
-      movies.find((item) => String(props.match.params.id) === String(item.id))
-    );
-  }, [movie, props.match.params.id, movies]);
-
+    setMovie(movies.find((item) => String(id) === String(item.id)));
+  }, [movie, id, movies]);
+  console.log(movie);
   return (
     <Fragment>
-      {movie.length !== [] ? (
+      {movie !== undefined ? (
         <div className="container">
           <div className="row justify-content-md-center">
             <div className="col-6 mb-4 text-center">
@@ -22,7 +20,7 @@ const MovieDetail = ({ movies, ...props }) => {
               ></img>
             </div>
             <div className="col-6 mt-4 mb-4 text-center">
-              <h2 className>{movie.original_title}</h2>
+              <h2>{movie.original_title}</h2>
 
               <div> User score : {movie.vote_average}</div>
             </div>
@@ -30,7 +28,7 @@ const MovieDetail = ({ movies, ...props }) => {
           <div className=" text-center">{movie.overview}</div>
         </div>
       ) : (
-        "Error no match found"
+        <div></div>
       )}
     </Fragment>
   );
