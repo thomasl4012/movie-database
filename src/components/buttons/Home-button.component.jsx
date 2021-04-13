@@ -4,7 +4,7 @@ function HomeButton(props) {
   let history = useHistory();
 
   function handleClick() {
-    history.push("/movie-database/");
+    history.push("/");
     window.location.reload();
   }
 
