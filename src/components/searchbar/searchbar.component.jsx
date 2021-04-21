@@ -1,5 +1,4 @@
 import React from "react";
-import HomeButton from "../buttons/Home-button.component";
 
 const SearchBar = (props) => {
   return (
@@ -16,14 +15,6 @@ const SearchBar = (props) => {
               value={props.value}
             ></input>
           </form>
-
-          {props.searchState ? (
-            <HomeButton className={"btn btn-secondary mt-2 mb-2"}>
-              Go Home
-            </HomeButton>
-          ) : (
-            ""
-          )}
         </div>
       </nav>
     </div>

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import { Route } from "react-router-dom";
 import MovieDetail from "./components/movie-detail/Movie-detail.component";
@@ -8,60 +8,59 @@ import Loader from "./assets/loading.gif";
 import MoviesList from "./components/movie-list/Movie-list.component";
 import MoviesMobile from "./components/movie-mobile/Movie-mobile.component";
 
-export class App extends Component {
-  apiKey = "d724349c02790ae2f347ffae502596a1";
+export default function App() {
+  const apiKey = "d724349c02790ae2f347ffae502596a1";
 
-  baseUrl = "https://api.themoviedb.org/3";
+  const baseUrl = "https://api.themoviedb.org/3";
 
-  state = {
-    movies: [],
-    loading: true,
-    search: "",
-    width: 0,
-    searchState: false,
-  };
+  const [movies, setMovie] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [windowSize, setWindowSize] = useState(window.innerWidth);
+  const [search, setSearch] = useState("");
 
-  componentDidMount() {
-    this.setState({ width: window.innerWidth });
-    axios
-      .get(
-        `https://api.themoviedb.org/3/movie/popular?api_key=${this.apiKey}&language=en-US&page=1`
-      )
-      .then((apiResponse) => {
-        this.setState({
-          movies: apiResponse.data.results,
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize(window.innerWidth);
+    };
 
-          loading: false,
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (search !== "") {
+      axios
+        .get(
+          `${baseUrl}/search/movie?api_key=${apiKey}&query=${search}&page=1&include_adult=false`
+        )
+        .then((apiResponse) => {
+          setMovie(apiResponse.data.results);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
         });
-      })
-      .catch((error) => console.log(error));
-  }
+    } else {
+      axios
+        .get(`${baseUrl}/movie/popular?api_key=${apiKey}&language=en-US&page=1`)
+        .then((apiResponse) => {
+          setMovie(apiResponse.data.results);
+          setLoading(false);
+        })
+        .catch((error) => console.log(error));
+    }
+  }, [search]);
 
-  handleChange = (e) => {
-    this.setState({ search: e.target.value });
+  const handleChange = (e) => {
+    setSearch(e.target.value);
   };
 
-  onSubmit = (e) => {
-    e.preventDefault();
+  return (
+    <div className="App">
+      <SearchBar handleChange={handleChange} value={search} />
 
-    axios
-      .get(
-        `https://api.themoviedb.org/3/search/movie?api_key=${this.apiKey}&query=${this.state.search}&page=1&include_adult=false`
-      )
-      .then((apiResponse) => {
-        this.setState({ movies: apiResponse.data.results, searchState: true });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  render() {
-    const { movies, loading, searchState, search } = this.state;
-
-    let display;
-    if (this.state.width > 575) {
-      display = (
+      {windowSize > 575 ? (
         <div className="container mt-4">
           {loading ? (
             <img src={Loader} alt="loading..." className="loader" />
@@ -81,26 +80,11 @@ export class App extends Component {
             </div>
           )}
         </div>
-      );
-    } else {
-      display = (
+      ) : (
         <div>
           <MoviesMobile movies={movies} />
         </div>
-      );
-    }
-
-    return (
-      <div className="App">
-        <SearchBar
-          handleChange={this.handleChange}
-          onSubmit={this.onSubmit}
-          searchState={searchState}
-          value={search}
-        />
-        {display}
-      </div>
-    );
-  }
+      )}
+    </div>
+  );
 }
-export default App;
